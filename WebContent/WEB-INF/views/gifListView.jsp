@@ -5,14 +5,33 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" type="text/css">
+<script src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
+<script src="${pageContext.request.contextPath}/js/searchGiphy.js"></script>
+<title></title>
 </head>
 <body>
 
 	<jsp:include page="_header.jsp"></jsp:include>
     <jsp:include page="_menu.jsp"></jsp:include>
  
-    <h3>GIF in Account Profile</h3>
+ 	<h1 class="title">Giphy API Search</h1>
+ 
+ 	<div class="input-wrapper empty">
+    	<input type="text" class="query" />
+    	<div class="loader"></div>
+    	<div class="clear"></div>
+	</div>
+
+	<div class="result">
+	</div>
+
+	<div class="random-outer">
+  		<button class="random">Get Another GIF</button>
+  		<form action="addGif" method="get">
+  			<button class="random">Save GIF to Profile</button>
+  		</form>
+	</div>    
  
     <p style="color: red;">${errorString}</p>
  
@@ -34,9 +53,7 @@
              </td>
           </tr>
        </c:forEach>
-    </table>
- 
-    <a href="addGif" >Create Gif</a>
+    </table>    
  
     <jsp:include page="_footer.jsp"></jsp:include>
 
