@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package test.app.filters;
 
 import java.io.IOException;
@@ -18,100 +21,98 @@ import javax.servlet.http.HttpServletRequest;
 import test.app.conn.DBConnectionUtils;
 import test.app.util.SessionUtils;
 
+/**
+ * @author paulp
+ * 
+ * This filter creates the connection to the database and sets
+ * it in the session attribute before forwarding the request
+ */
 @WebFilter(filterName = "jdbcFilter", urlPatterns = { "/*" })
-public class JDBCFilter implements Filter {
-
-	public JDBCFilter() {
+public class JDBCFilter implements Filter
+{
+	public JDBCFilter()
+	{
 	}
 
 	@Override
-	public void init(FilterConfig fConfig) throws ServletException {
-
+	public void init(FilterConfig fConfig) throws ServletException
+	{
 	}
 
 	@Override
-	public void destroy() {
-
+	public void destroy()
+	{
 	}
 
-	// Check the target of the request is a servlet?
-	private boolean needJDBC(HttpServletRequest request) {
-		System.out.println("JDBC Filter");
-		//
-		// Servlet Url-pattern: /spath/*
-		//
-		// => /spath
+	/**
+	 * This method checks to see if the request is a 
+	 * request to a servlet. If so then that request
+	 * needs access to the connection attribute
+	 * 
+	 * @param request
+	 * @return
+	 */
+	private boolean needJDBC(HttpServletRequest request)
+	{
+		// Get servlet URL path
 		String servletPath = request.getServletPath();
-		// => /abc/mnp
 		String pathInfo = request.getPathInfo();
-
 		String urlPattern = servletPath;
 
-		if (pathInfo != null) {
-			// => /spath/*
+		if (pathInfo != null)
+		{
 			urlPattern = servletPath + "/*";
 		}
 
-		// Key: servletName.
-		// Value: ServletRegistration
+		// Get a map of <ServletName, ServletRegistration>
 		Map<String, ? extends ServletRegistration> servletRegistrations = request.getServletContext()
 				.getServletRegistrations();
 
-		// Collection of all servlet in your Webapp.
+		// Collection of all servlets in your Webapp.
 		Collection<? extends ServletRegistration> values = servletRegistrations.values();
-		for (ServletRegistration sr : values) {
+		for (ServletRegistration sr : values)
+		{
 			Collection<String> mappings = sr.getMappings();
-			if (mappings.contains(urlPattern)) {
+			if (mappings.contains(urlPattern))
+			{
 				return true;
 			}
 		}
+		
 		return false;
 	}
 
+	/**
+	 * Only open database connection for valid requests. (For example, the path to the servlet, JSP, ..)
+	 * Avoid opening connections for common requests (For example: image, css, javascript,... )
+	 */
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
 		HttpServletRequest req = (HttpServletRequest) request;
 
-		// Only open connections for the special requests.
-		// (For example, the path to the servlet, JSP, ..)
-		//
-		// Avoid open connection for commons request.
-		// (For example: image, css, javascript,... )
-		//
-		if (this.needJDBC(req)) {			
-
+		if (this.needJDBC(req))
+		{			
 			Connection conn = null;
-			try {
-				// Create a Connection.
-				conn = DBConnectionUtils.getMySQLConnection();
-				// Set outo commit to false.
+			try
+			{
+				conn = DBConnectionUtils.getMySQLConnection();			
 				conn.setAutoCommit(false);
-				// Store Connection object in attribute of request.
 				SessionUtils.storeConnection(req, conn);				
-
-				// Allow request to go forward
-				// (Go to the next filter or target)
 				chain.doFilter(request, response);
-
-				// Invoke the commit() method to complete the transaction with
-				// the DB.
 				conn.commit();
-			} catch (Exception e) {
+			} catch (Exception e)
+			{
 				e.printStackTrace();				
 				throw new ServletException();
-			} finally {				
+			} finally
+			{				
 			}
 		}
-		// With commons requests (images, css, html, ..)
-		// No need to open the connection.
-		else {
-			// Allow request to go forward
-			// (Go to the next filter or target)
+		else
+		{
 			chain.doFilter(request, response);
 		}
-
 	}
-
 }

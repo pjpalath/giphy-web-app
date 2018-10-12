@@ -6,10 +6,16 @@ package test.app.entities;
 /**
  * @author paulp
  *
+ * Enumeration of the possible GIF types
  */
-public enum GIFClassification {
-
+public enum GIFClassification
+{
 	FUNNY,
 	SAD,
-	STOIC
+	STOIC,
+	CRAZY,
+	WILD,
+	CHEERFUL,
+	UPBEAT,
+	SICK
 }

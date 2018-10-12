@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package test.app.servlet;
 
 import java.io.IOException;
@@ -15,17 +18,20 @@ import test.app.util.SessionUtils;
 
 /**
  * Servlet implementation class UserInfoServlet
+ * This servlet is used to retrieve the user info for the
+ * logged in user
  */
 @WebServlet(urlPatterns = { "/userInfo" })
-public class UserInfoServlet extends HttpServlet {
+public class UserInfoServlet extends HttpServlet
+{
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public UserInfoServlet() {
+	public UserInfoServlet()
+	{
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -33,25 +39,25 @@ public class UserInfoServlet extends HttpServlet {
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		HttpSession session = request.getSession();
-
-		// Check User has logged on
-		UserAccount loginedUser = SessionUtils.getLoginedUser(session);
-
-		// Not logged in
-		if (loginedUser == null) {
-			// Redirect to login page.
-			response.sendRedirect(request.getContextPath() + "/login");
-			return;
-		}
+			throws ServletException, IOException
+	{
+		// Check if the user has logged on. If not redirect the user
+        // to the log on page. If the user has logged on get the username
+        HttpSession session = request.getSession();
+     	UserAccount loginedUser = SessionUtils.getLoginedUser(session);
+     	// Not logged in
+     	if (loginedUser == null) {
+     		// Redirect to login page.
+     		response.sendRedirect(request.getContextPath() + "/login");
+     		return;
+     	}
+     	
 		// Store info to the request attribute before forwarding.
 		request.setAttribute("user", loginedUser);
 
 		// If the user has logged in, then forward to the page
 		// /WEB-INF/views/userInfoView.jsp
-		RequestDispatcher dispatcher //
-				= this.getServletContext().getRequestDispatcher("/WEB-INF/views/userInfoView.jsp");
+		RequestDispatcher dispatcher = this.getServletContext().getRequestDispatcher("/WEB-INF/views/userInfoView.jsp");
 		dispatcher.forward(request, response);
 	}
 
@@ -60,9 +66,8 @@ public class UserInfoServlet extends HttpServlet {
 	 *      response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
+			throws ServletException, IOException
+	{	
 		doGet(request, response);
 	}
-
 }

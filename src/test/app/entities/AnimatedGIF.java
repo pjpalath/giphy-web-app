@@ -6,6 +6,7 @@ package test.app.entities;
 /**
  * @author paulp
  *
+ * Entity that holds the animated gif URL and type
  */
 public class AnimatedGIF {
 
@@ -24,6 +25,4 @@ public class AnimatedGIF {
 	public void setType(GIFClassification type) {
 		this.type = type;
 	}
-	
-	
 }

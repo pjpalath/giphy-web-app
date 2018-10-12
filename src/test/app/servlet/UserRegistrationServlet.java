@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package test.app.servlet;
 
 import java.io.IOException;
@@ -16,23 +19,27 @@ import test.app.util.SessionUtils;
 
 /**
  * Servlet implementation class UserRegistrationServlet
+ * This servlet is used to serve requests to add a new user
+ * to the system
  */
 @WebServlet(urlPatterns = { "/addUser" })
-public class UserRegistrationServlet extends HttpServlet {
+public class UserRegistrationServlet extends HttpServlet
+{
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public UserRegistrationServlet() {
+    public UserRegistrationServlet()
+    {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
 		RequestDispatcher dispatcher = request.getServletContext()
                 .getRequestDispatcher("/WEB-INF/views/addUserView.jsp");
         dispatcher.forward(request, response);
@@ -41,18 +48,25 @@ public class UserRegistrationServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
 		Connection conn = SessionUtils.getStoredConnection(request);
 		 
+		// Holds errors in processing this request to send back in the
+     	// response to display on page
         String errorString = "";
         
+        // Get parameters from request and process
         String uname = (String) request.getParameter("uname");
-        String pwd = (String) request.getParameter("pwd");        
+        String pwd = (String) request.getParameter("pwd");
+        // If there are no errors to this point insert the user to the database
         try {
-        	if (errorString == null || errorString.trim().compareTo("") == 0) {
+        	if (errorString == null || errorString.trim().compareTo("") == 0)
+        	{
         		DBUtils.insertUser(conn, uname, pwd);
         	}
-		} catch (SQLException e) { 
+		} catch (SQLException e)
+        { 
 			e.printStackTrace();
 			errorString = "Unable to add new user to DB";
 		}        
@@ -61,16 +75,17 @@ public class UserRegistrationServlet extends HttpServlet {
         request.setAttribute("errorString", errorString);        
  
         // If error, forward to Edit page.
-        if (errorString != null && errorString.trim().compareTo("") != 0) {
+        if (errorString != null && errorString.trim().compareTo("") != 0)
+        {
             RequestDispatcher dispatcher = request.getServletContext()
                     .getRequestDispatcher("/WEB-INF/views/addUserView.jsp");
             dispatcher.forward(request, response);
         }
         // If everything nice.
-        // Redirect to the product listing page.
-        else {
+        // Redirect to the login page so the newly created user can log in.
+        else
+        {
             response.sendRedirect(request.getContextPath() + "/login");
         }
 	}
-
 }

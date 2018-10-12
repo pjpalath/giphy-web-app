@@ -1,19 +1,15 @@
 @CHARSET "ISO-8859-1";
 
-$blue: #2196F3;
-$transition: 300ms ease;
+body { 
+  background:#9BC86A; 
+  font:400 14px 'Calibri','Arial';
+  padding:20px;
+  padding-top: 250px;
+}
 
-html {
-  box-sizing: border-box;
-  outline: none;
-
-  *, *:before, *:after {
-    box-sizing: inherit;
-
-    &:focus {
-      outline: inherit;
-    }
-  }
+blockquote {
+  color:white;
+  text-align:center;
 }
 
 .title {
@@ -27,137 +23,126 @@ html {
   width: 90%;
   max-width: 500px;
   margin: 50px auto 0;
+  transition: 300ms ease;
+}
 
-  .query {
+  .input-wrapper .query {
     height: 50px;
     width: 100%;
     display: block;
     padding: 0 25px;
     border: 1px solid #ccc;
-
-    &:focus {
-      outline: none;
-      border: 1px solid $blue;
-
-      transition: $transition;
-    }
-
-    transition: $transition;
+	transition: 300ms ease;
   }
+  
+	  .input-wrapper .query :focus {
+	      outline: none;
+	      border: 1px solid #2196F3;
+	
+	      transition: 300ms ease;
+	  }
 
-  .loader {
+  .input-wrapper .loader {
     height: 5px;
     margin: 0;
     padding: 0;
     background: white;
     margin: 0 auto;
     position: relative;
-
-    &:before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      background: $blue;
-      width: 0%;
-      height: 5px;
-
-      transition: $transition;
-    }
-
-    &.done {
-      &:before {
-        width: 100%;
-      }
-    }
   }
 
-  .clear {
+	  .input-wrapper .loader :before {
+	      content: '';
+	      position: absolute;
+	      top: 0;
+	      left: 0;
+	      background: #2196F3;
+	      width: 0%;
+	      height: 5px;
+	      transition: 300ms ease;
+	  }
+  
+		  .input-wrapper .loader .done :before {
+		      width: 100%;
+		  }
+
+  .input-wrapper .clear {
     position: absolute;
     top: 0;
     right: 0;
     height: 50px;
     width: 30px;
     opacity: 1;
-
-    &:before {
-      content: '\00d7';
-      color: $blue;
-      position: absolute;
-      top: 0;
-      left: 0;
-      text-align: center;
-      width: 100%;
-      line-height: 50px;
-      
-      transition: $transition;
-    }
-    
-    &:hover {
-      &:before {
-        cursor: pointer;
-      }
-    }
   }
   
-  &.active {
+	  .input-wrapper .clear :before {
+	      content: '\00d7';
+	      color: #2196F3;
+	      position: absolute;
+	      top: 0;
+	      left: 0;
+	      text-align: center;
+	      width: 100%;
+	      line-height: 50px;
+	      
+	      transition: 300ms ease;
+	  }
+  
+		  .input-wrapper .clear :hover :before {
+		      cursor: pointer;
+		  }
+  
+  .input-wrapper .active {
     margin-top: -55px;
-    
-    .query {
-      height: 30px;
-      margin-top: 0px;
-
-      transition: $transition;
-    }
-    
-    .clear {
-      height: 30px;
-      
-      &:before {
-        line-height: 30px;
-      }
-    }
   }
   
-  &.empty {
-    .clear {
-      opacity: 0;
-    }
-  }
+	  .input-wrapper .active .query {
+	      height: 30px;
+	      margin-top: 0px;
+	      transition: 300ms ease;
+	  }
+  	
+	  .input-wrapper .active.clear {
+	      height: 30px;
+	  }	  	
+  	
+		  .input-wrapper .active .clear :before {
+		    	line-height: 30px;
+		  }
   
-  transition: $transition;
-}
+  .input-wrapper .empty.clear {
+    opacity: 0;
+  }
 
 .result {
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
-  padding: 5% 25px 0;
-  /* background: #eee; */
-  
-  img, p.no-results {
+  padding: 5% 25px 0;  
+}
+
+  .result img, p.no-results {
     width: 100%;
     max-width: 500px;
     height: auto;
     opacity: 1;
-    
-    &.hidden {
-      opacity: 0;
-      
-      transition: $transition;
-    }
-    
-    transition: $transition;
+    transition: 300ms ease;
   }
   
-  p.no-result {
-    font-weight: 200;
-    
-    &.center {
+  	/**
+    .result img, p.no-results .hidden {
+      opacity: 0;
+      transition: 300ms ease;
+    }
+    **/
+  
+  .result p.no-result {
+    font-weight: 200;    
+  }
+  
+    .result p.no-result center {
       text-align: center;
     }
-  }
-}
 
 .random-outer {
   width:100%;
@@ -170,20 +155,87 @@ html {
   margin: 10px 10px 10px 0px;
   height: 50px;
   display: inline-block;
-  
-  background: $blue;
+  background: #2196F3;
   color: white;
   border: none;
-  
   opacity: 0;
-  
-  &:hover {
-    background: darken($blue, 10%);
+  transition: 300ms ease;
+}
+
+  .random hover {
+    background: #2196F3;
   }
   
-  &.active {
+  .random .active {
     opacity: 1;
   }
-  
-  transition: $transition;
+
+table { 
+  border-spacing: 1px; 
+  border-collapse: collapse; 
+  background:white;
+  border-radius:6px;
+  overflow:hidden;
+  max-width:800px; 
+  width:100%;
+  margin:0 auto;
+  position:relative;
 }
+
+  table * { position:relative }
+  
+  table td,th { padding-left:8px}
+
+  table thead tr { 
+    height:60px;
+    background:#FFED86;
+    font-size:16px;
+  }
+  
+  table tbody tr { 
+  	height:48px; border-bottom:1px solid #E3F1D5 ;
+  }
+  
+  	table tbody tr :last-child { 
+  		border:0;
+  	}
+  
+ 	table td,th {
+ 		text-align:left;		
+	}
+		
+		table td,th .l	{ text-align:right }
+		table td,th .c	{ text-align:center }
+		table td,th .r	{ text-align:center }
+
+
+@media only screen and (max-width: 35.5em) {
+  table { 
+  	display:block;
+  }
+  
+  	table > *,tr,td,th { display:block }
+  	
+  	table thead { display:none }
+  	
+  	table tbody tr { 
+  		height:auto; padding:8px 0;
+    }
+    
+    	table tbody tr td { padding-left:45%; margin-bottom:12px;}
+        table tbody tr :last-child { margin-bottom:0 }
+        table tbody tr :before { 
+          position:absolute;
+          font-weight:700;
+          width:40%;
+          left:10px;
+          top:0
+        }
+        
+        table tbody tr :nth-child(1):before { content:"GIF Url";}
+        table tbody tr :nth-child(2):before { content:"GIF Type";}
+        table tbody tr :nth-child(3):before { content:"Edit";}
+        table tbody tr :nth-child(4):before { content:"Delete";}        
+}
+ 
+ 

@@ -1,8 +1,14 @@
+/**
+ * 
+ */
 package test.app.servlet;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -20,38 +26,50 @@ import test.app.util.SessionUtils;
 
 /**
  * Servlet implementation class EditGIFServlet
+ * This is the servlet that takes requests to edit
+ * {@link AnimatedGIF} to the database
  */
 @WebServlet(urlPatterns = { "/editGif" })
-public class EditGIFServlet extends HttpServlet {
+public class EditGIFServlet extends HttpServlet
+{
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public EditGIFServlet() {
+    public EditGIFServlet()
+    {
         super();
-        // TODO Auto-generated constructor stub
     }
-
+  
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException
+    {
         Connection conn = SessionUtils.getStoredConnection(request);
  
+        // Holds errors in processing this request to send back in the
+     	// response to display on page
+        String errorString = "";
+        
+        // Get parameters from request and process
         String gifUrl = (String) request.getParameter("url");
  
+        // Get the AnimatedGif object for this gifUrl
         AnimatedGIF aGif = null;
- 
-        String errorString = null;
- 
-        try {
+        try
+        {
         	aGif = DBUtils.retrieveGif(conn, gifUrl);
-        } catch (SQLException e) {
+        } catch (SQLException e)
+        {
             e.printStackTrace();
             errorString = e.getMessage();
         }
         
-        if (errorString != null && aGif == null) {
+        // If there is an error go back to the gif list page and
+        // display the error
+        if (errorString != null && aGif == null)
+        {
             response.sendRedirect(request.getServletPath() + "/gifList");
             return;
         }
@@ -60,20 +78,27 @@ public class EditGIFServlet extends HttpServlet {
         request.setAttribute("errorString", errorString);
         request.setAttribute("animatedgif", aGif);
  
+        // Return the list of GIF classifications from the GIFClassification enum
+        List<String> listCategory = Stream.of(GIFClassification.values())
+                .map(Enum::name)
+                .collect(Collectors.toList());
+        request.setAttribute("listType", listCategory);
+        
         RequestDispatcher dispatcher = request.getServletContext()
                 .getRequestDispatcher("/WEB-INF/views/editGifView.jsp");
         dispatcher.forward(request, response);
- 
     }
  
-    // After the user modifies the product information, and click Submit.
+    // After the user modifies the gif information, and click Submit.
     // This method will be executed.
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException
+    {
     	Connection conn = SessionUtils.getStoredConnection(request);
     	
-    	// Check User has logged on
+    	// Check if the user has logged on. If not redirect the user
+        // to the log on page. If the user has logged on get the username
         HttpSession session = request.getSession();
      	UserAccount loginedUser = SessionUtils.getLoginedUser(session);
      	// Not logged in
@@ -84,8 +109,11 @@ public class EditGIFServlet extends HttpServlet {
      	}
      	String uname = loginedUser.getUserName();
     	 
+     	// Holds errors in processing this request to send back in the
+     	// response to display on page
         String errorString = "";
         
+        // Get parameters from request and process
         String url = (String) request.getParameter("url");
         String type = (String) request.getParameter("type");
         GIFClassification typeEnum = null;
@@ -96,15 +124,19 @@ public class EditGIFServlet extends HttpServlet {
         {
         	errorString = errorString + "Incorrect classification type";
         }
+        // If there are no errors to this point update the modified GIF to the database
         try {
-        	if (errorString == null || errorString.trim().compareTo("") == 0) {
+        	if (errorString == null || errorString.trim().compareTo("") == 0)
+        	{
         		DBUtils.updateGif(conn, uname, url, type);
         	}
-		} catch (SQLException e) { 
+		} catch (SQLException e)
+        { 
 			e.printStackTrace();
 			errorString = "Unable to insert gif details to DB";
 		}
         
+        // Create an instance of AnimatedGif to send back in the response
         AnimatedGIF aGif = new AnimatedGIF();
         aGif.setUrl(url);
         aGif.setType(typeEnum);
@@ -114,14 +146,16 @@ public class EditGIFServlet extends HttpServlet {
         request.setAttribute("animatedgif", aGif);
  
         // If error, forward to Edit page.
-        if (errorString != null && errorString.trim().compareTo("") != 0) {
+        if (errorString != null && errorString.trim().compareTo("") != 0)
+        {
             RequestDispatcher dispatcher = request.getServletContext()
                     .getRequestDispatcher("/WEB-INF/views/editGifView.jsp");
             dispatcher.forward(request, response);
         }
         // If everything nice.
-        // Redirect to the product listing page.
-        else {
+        // Redirect to the gif listing page.
+        else
+        {
             response.sendRedirect(request.getContextPath() + "/gifList");
         }
     }

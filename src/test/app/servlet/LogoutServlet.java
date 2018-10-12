@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package test.app.servlet;
 
 import java.io.IOException;
@@ -13,9 +16,11 @@ import test.app.util.SessionUtils;
 
 /**
  * Servlet implementation class LogoutServlet
+ * This servlet is used to logout the user and delete the user cookie
  */
 @WebServlet(urlPatterns = { "/logout" })
-public class LogoutServlet extends HttpServlet {
+public class LogoutServlet extends HttpServlet
+{
 	private static final long serialVersionUID = 1L;
        
     /**
@@ -28,7 +33,8 @@ public class LogoutServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
 		SessionUtils.deleteUserCookie(response);
 		SessionUtils.storeLoginedUser(request.getSession(), null);
 		RequestDispatcher dispatcher = request.getServletContext()
@@ -46,5 +52,4 @@ public class LogoutServlet extends HttpServlet {
                 .getRequestDispatcher("/WEB-INF/views/loginView.jsp");
         dispatcher.forward(request, response);
 	}
-
 }

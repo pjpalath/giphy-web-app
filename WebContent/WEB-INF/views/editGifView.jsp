@@ -5,14 +5,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" type="text/css">
 <title>Insert title here</title>
 </head>
 <body>
 
 	<jsp:include page="_header.jsp"></jsp:include>
-    <jsp:include page="_menu.jsp"></jsp:include>
  
-    <h3>Edit Product</h3>
+    <h3>Edit GIF Details</h3>
  
     <p style="color: red;">${errorString}</p>
  
@@ -26,7 +26,14 @@
              </tr>
              <tr>
                 <td>GIF Type</td>
-                <td><input type="text" name="type" value="${animatedgif.type}" /></td>
+                <td>
+                	<!--  <input type="text" name="type" value="${animatedgif.type}" /> -->
+                	<select name="type">
+        				<c:forEach items="${listType}" var="type">
+            				<option value="${type}">${type}</option>
+        				</c:forEach>
+    				</select>
+                </td>
              </tr>             
              <tr>
                 <td colspan = "2">

@@ -6,14 +6,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" type="text/css">
-<script src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
-<script src="${pageContext.request.contextPath}/js/searchGiphy.js"></script>
 <title></title>
 </head>
 <body>
 
-	<jsp:include page="_header.jsp"></jsp:include>
-    <jsp:include page="_menu.jsp"></jsp:include>
+	<jsp:include page="_header.jsp"></jsp:include>    
  
  	<h1 class="title">Giphy API Search</h1>
  
@@ -23,36 +20,50 @@
     	<div class="clear"></div>
 	</div>
 
-	<div class="result">
+	<div id="result" class="result">
 	</div>
 
 	<div class="random-outer">
-  		<button class="random">Get Another GIF</button>
-  		<form action="addGif" method="get">
-  			<button class="random">Save GIF to Profile</button>
+  		<button id="getAnotherGifButton" class="random">Get Another GIF</button>
+  		<!--<form action="addGif" method="post" class="random" id="addGifForm">-->
+  		<form action="addGif" method="post" class="random" id="addGifForm">
+  			<input type="hidden" value='url' name="gifurl" id="gifurl" />
+  			Select a Category:&nbsp;
+    		<select name="category">
+        		<c:forEach items="${listCategory}" var="category">
+            		<option value="${category}">${category}</option>
+        		</c:forEach>
+    		</select>
+    		<br/><br/>
   		</form>
+  		<button id="saveGifButton" class="random">Save GIF to Profile</button>
 	</div>    
  
     <p style="color: red;">${errorString}</p>
  
-    <table border="1" cellpadding="5" cellspacing="1" >
-       <tr>
-          <th>GIF Url</th>
-          <th>GIF Type</th>          
-          <th>Delete</th>
-       </tr>
-       <c:forEach items="${gifList}" var="gif" >
-          <tr>
-             <td>${gif.url}</td>
-             <td>${gif.type}</td>             
-             <td>
-                <a href="editGif?url=${gif.url}">Edit</a>
-             </td>
-             <td>
-                <a href="deleteGif?url=${gif.url}">Delete</a>
-             </td>
-          </tr>
-       </c:forEach>
+    <table id="gifTable">
+       <thead>
+	       <tr>
+	          <th>GIF Url</th>
+	          <th>GIF Type</th>         
+	          <th>Edit</th>
+	          <th>Delete</th>
+	       </tr>
+       </thead>
+       <tbody>
+	       <c:forEach items="${gifList}" var="gif" >
+	          <tr>
+	             <td>${gif.url}</td>
+	             <td>${gif.type}</td>             
+	             <td>
+	                <a href="editGif?url=${gif.url}">Edit</a>
+	             </td>
+	             <td>
+	                <a href="deleteGif?url=${gif.url}">Delete</a>
+	             </td>
+	          </tr>
+	       </c:forEach>
+       </tbody>
     </table>    
  
     <jsp:include page="_footer.jsp"></jsp:include>

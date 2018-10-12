@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package test.app.util;
 
 import java.sql.Connection;
@@ -11,13 +14,32 @@ import test.app.entities.AnimatedGIF;
 import test.app.entities.GIFClassification;
 import test.app.entities.UserAccount;
 
-public class DBUtils {
-
-	public DBUtils() {
+/**
+ * @author paulp
+ *
+ * This utility class is used to insert, updated and delete records from the
+ * database for users and animated gid records
+ */
+public class DBUtils
+{
+	/**
+	 * 
+	 */
+	public DBUtils()
+	{
 	}
 
-	public static UserAccount findUser(Connection conn, String userName, String password) throws SQLException {
-
+	/**
+	 * Retrieve the user account given username and password
+	 *  
+	 * @param conn
+	 * @param userName
+	 * @param password
+	 * @return
+	 * @throws SQLException
+	 */
+	public static UserAccount findUser(Connection conn, String userName, String password) throws SQLException
+	{
 		String sql = "Select a.uname, a.pwd from user a where a.uname = ? and a.pwd= ?";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
@@ -25,7 +47,8 @@ public class DBUtils {
 		pstm.setString(2, password);
 		ResultSet rs = pstm.executeQuery();
 
-		if (rs.next()) {			
+		if (rs.next())
+		{
 			UserAccount user = new UserAccount();
 			user.setUserName(userName);
 			user.setPassword(password);
@@ -34,8 +57,16 @@ public class DBUtils {
 		return null;
 	}
 
-	public static UserAccount findUser(Connection conn, String uname) throws SQLException {
-
+	/**
+	 * Retrieve the user account given username
+	 * 
+	 * @param conn
+	 * @param uname
+	 * @return
+	 * @throws SQLException
+	 */
+	public static UserAccount findUser(Connection conn, String uname) throws SQLException
+	{
 		String sql = "Select a.uname, a.pwd from user a where a.uname = ?";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
@@ -43,7 +74,8 @@ public class DBUtils {
 
 		ResultSet rs = pstm.executeQuery();
 
-		if (rs.next()) {
+		if (rs.next())
+		{
 			String password = rs.getString("pwd");			
 			UserAccount user = new UserAccount();
 			user.setUserName(uname);
@@ -54,8 +86,16 @@ public class DBUtils {
 		return null;
 	}
 	
-	public static void insertUser(Connection conn, String uname, String pwd) throws SQLException {
-		
+	/**
+	 * Insert a new user to the user database
+	 * 
+	 * @param conn
+	 * @param uname
+	 * @param pwd
+	 * @throws SQLException
+	 */
+	public static void insertUser(Connection conn, String uname, String pwd) throws SQLException
+	{	
 		String sql;
 		PreparedStatement pstm;
 		
@@ -66,14 +106,24 @@ public class DBUtils {
 		pstm.executeUpdate();
 	}
 
-	public static AnimatedGIF retrieveGif(Connection conn, String gifurl) throws SQLException {
+	/**
+	 * Retrieve an animated gif record given the gif url
+	 * 
+	 * @param conn
+	 * @param gifurl
+	 * @return
+	 * @throws SQLException
+	 */
+	public static AnimatedGIF retrieveGif(Connection conn, String gifurl) throws SQLException
+	{
 		String sql = "Select a.giftype from gif a where a.gifurl = ?";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, gifurl);		
 		ResultSet rs = pstm.executeQuery();
 		AnimatedGIF aGif = new AnimatedGIF();
-		while (rs.next()) {			
+		while (rs.next())
+		{			
 			String giftype = rs.getString("giftype");			
 			aGif.setUrl(gifurl);			
 			aGif.setType(GIFClassification.valueOf(giftype));			
@@ -81,7 +131,16 @@ public class DBUtils {
 		return aGif;
 	}
 
-	public static List<AnimatedGIF> queryGif(Connection conn, String uname) throws SQLException {
+	/**
+	 * Retrieve all the gif's for a given user
+	 * 
+	 * @param conn
+	 * @param uname
+	 * @return
+	 * @throws SQLException
+	 */
+	public static List<AnimatedGIF> queryGif(Connection conn, String uname) throws SQLException
+	{
 		String sql = "Select a.gifurl from gif_user a where a.uname = ?";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
@@ -89,7 +148,8 @@ public class DBUtils {
 		
 		ResultSet rs = pstm.executeQuery();
 		List<AnimatedGIF> list = new ArrayList<AnimatedGIF>();
-		while (rs.next()) {
+		while (rs.next())
+		{
 			String gifurl = rs.getString("gifurl");			
 			AnimatedGIF aGif = retrieveGif(conn, gifurl);			
 			list.add(aGif);
@@ -97,6 +157,15 @@ public class DBUtils {
 		return list;
 	}	
 
+	/**
+	 * This utility method checks if a particular GIF given its URL
+	 * exists in the database
+	 * 
+	 * @param conn
+	 * @param gifurl
+	 * @return
+	 * @throws SQLException
+	 */
 	public static boolean isGifExists(Connection conn, String gifurl) throws SQLException {
 		String sql = "Select a.giftype from gif a where a.gifurl = ?";
 
@@ -104,13 +173,24 @@ public class DBUtils {
 		pstm.setString(1, gifurl);
 		
 		ResultSet rs = pstm.executeQuery();		
-		if (rs.next()) {
+		if (rs.next())
+		{
 			return true;
 		}
 		return false;
 	}
 	
-	public static boolean isGifExistsForUser(Connection conn, String uname, String gifurl) throws SQLException {
+	/**
+	 * This utility method checks if a particular GIF given its URL
+	 * exists in the database for the specified user
+	 * @param conn
+	 * @param uname
+	 * @param gifurl
+	 * @return
+	 * @throws SQLException
+	 */
+	public static boolean isGifExistsForUser(Connection conn, String uname, String gifurl) throws SQLException
+	{
 		String sql = "Select a.gifurl from gif_user a where a.uname = ? and a.gifurl = ?";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
@@ -118,27 +198,50 @@ public class DBUtils {
 		pstm.setString(2, gifurl);
 		
 		ResultSet rs = pstm.executeQuery();		
-		if (rs.next()) {
+		if (rs.next())
+		{
 			return true;
 		}
 		return false;
 	}
 	
-	public static boolean isGifExistsForAnyUser(Connection conn, String gifurl) throws SQLException {
+	/**
+	 * This utility method checks if a particular GIF given its URL
+	 * exists in the database for any user
+	 * 
+	 * @param conn
+	 * @param gifurl
+	 * @return
+	 * @throws SQLException
+	 */
+	public static boolean isGifExistsForAnyUser(Connection conn, String gifurl) throws SQLException
+	{
 		String sql = "Select a.uname from gif_user a where a.gifurl = ?";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);		
 		pstm.setString(1, gifurl);
 		
 		ResultSet rs = pstm.executeQuery();		
-		if (rs.next()) {
+		if (rs.next())
+		{
 			return true;
 		}
 		return false;
 	}
 	
-	public static void insertGif(Connection conn, String uname, String gifurl, String giftype) throws SQLException {
-		
+	/**
+	 * Insert GIF into database if it does not already exist. If the GIF already exists
+	 * but is not associated with the specified user, then add it to the specified users
+	 * account
+	 * 
+	 * @param conn
+	 * @param uname
+	 * @param gifurl
+	 * @param giftype
+	 * @throws SQLException
+	 */
+	public static void insertGif(Connection conn, String uname, String gifurl, String giftype) throws SQLException
+	{	
 		String sql;
 		PreparedStatement pstm;
 		
@@ -161,7 +264,17 @@ public class DBUtils {
 		}
 	}
 	
-	public static void updateGif(Connection conn, String uname, String gifurl, String giftype) throws SQLException {
+	/**
+	 * Update a GIF record in the database given the updated value
+	 * 
+	 * @param conn
+	 * @param uname
+	 * @param gifurl
+	 * @param giftype
+	 * @throws SQLException
+	 */
+	public static void updateGif(Connection conn, String uname, String gifurl, String giftype) throws SQLException
+	{
 		String sql = "update gif set giftype = ? where gifurl = ?";
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, giftype);
@@ -169,6 +282,16 @@ public class DBUtils {
 		pstm.executeUpdate();
 	}
 	
+	/**
+	 * Delete the gif given the gif url for the given user. Since the gif might be
+	 * associated with other users, check to see if there are any other users associated
+	 * with this gif - if none then delete from gif table
+	 * 
+	 * @param conn
+	 * @param uname
+	 * @param gifurl
+	 * @throws SQLException
+	 */
 	public static void deleteGif(Connection conn, String uname, String gifurl) throws SQLException {
 		String sql = "delete from gif_user where gifurl = ? and uname = ?";
 		PreparedStatement pstm = conn.prepareStatement(sql);
